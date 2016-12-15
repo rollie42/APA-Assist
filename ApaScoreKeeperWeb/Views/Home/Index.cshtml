@@ -1,0 +1,45 @@
+﻿<div class="row">
+    <div class="col-md-5 player" id="player1">
+        <div class="name">Name</div>
+        <div class="team">Team Joker</div>
+        <div class="score-container">
+            <span class="score-points">15</span>
+            <span class="score-points-needed">/38</span>
+        </div>
+    </div>
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-5 player" id="player2">
+        <div class="name">Name2</div>
+        <div class="team">Team Joker</div>
+        <div class="score-container">
+            <span class="score-points">15</span>
+            <span class="score-points-needed">/38</span>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+<script type="text/javascript">
+    $(function () {
+        var gameHub = $.connection.gameHub
+        $.connection.hub.logging = true
+        gameHub.client.updateGame = updateGame
+        $.connection.hub.start()
+    })
+
+    function updateGame(game) {
+        console.log(JSON.stringify(game))
+        updatePlayer(game.Player1, $('#player1'))
+        updatePlayer(game.Player2, $('#player2'))
+    }
+
+    function updatePlayer(player, element) {
+        element.find('.name').text(player.Name)
+        element.find('.team').text(player.Team)
+        element.find('.score-points').text(player.Points)
+        element.find('.score-points-needed').text('/' + player.PointsNeeded)
+    }
+</script>
+}

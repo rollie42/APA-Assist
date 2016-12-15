@@ -1,0 +1,35 @@
+﻿body {
+
+}
+
+html{
+    background-color: black;
+    color: ghostwhite;
+}
+
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: black;
+    color: ghostwhite;
+}
+
+.player {
+    text-align: center;
+}
+
+.name {
+    font-size: 5vw;
+}
+
+.team {
+    font-size: 3vw;
+}
+
+.score-points {
+    font-size: 26vw;
+}
+
+.score-points-needed {
+    font-size: 7vw;
+}
