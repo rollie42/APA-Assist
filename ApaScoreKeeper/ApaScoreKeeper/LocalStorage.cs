@@ -37,6 +37,7 @@ namespace ApaScoreKeeper
 
         private static async Task Write(IUniqueIdentifier obj)
         {
+            // Write object to storage
             var accessor = new StorageAccess();
             await accessor.Write(obj.Id, obj);
         }
