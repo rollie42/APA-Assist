@@ -10,23 +10,17 @@ namespace ApaScoreKeeper
 {
     public static class LocalStorage
     {
-        private const string _folderName = "APA Assist";
         private const string _recentGamesName = "Recent Games";
 
         public static async Task<IEnumerable<Match>> GetRecentMatches()
         {
-            var appFolder = await ApplicationFolder();
-            var recentGamesFile = await appFolder.CreateFileAsync(_recentGamesName, CreationCollisionOption.OpenIfExists); // TODO OpenIfExists
-            var serialized = await recentGamesFile.ReadAllTextAsync();
-            return string.IsNullOrEmpty(serialized) ? new List<Match>() : JsonConvert.DeserializeObject<List<Match>>(serialized);
+            var recent = await Read<UniqueIdentifierWrapper<IEnumerable<Match>>>(_recentGamesName);
+            return recent.Data ?? new List<Match>();
         }
 
         public static async Task SaveRecentMatches(IEnumerable<Match> recentGames)
         {
-            var appFolder = await ApplicationFolder();
-            var recentGamesFile = await appFolder.CreateFileAsync(_recentGamesName, CreationCollisionOption.OpenIfExists); // TODO OpenIfExists
-            var serialized = JsonConvert.SerializeObject(recentGames);
-            await recentGamesFile.WriteAllTextAsync(serialized);
+            await Write(UniqueIdentifierWrapper.Create(_recentGamesName, recentGames));
         }
 
         public static async Task AddRecentMatch(Match game)
@@ -41,9 +35,16 @@ namespace ApaScoreKeeper
             return matches.FirstOrDefault();
         }
 
-        private static async Task<IFolder> ApplicationFolder()
+        private static async Task Write(IUniqueIdentifier obj)
         {
-            return await FileSystem.Current.LocalStorage.CreateFolderAsync(_folderName, CreationCollisionOption.OpenIfExists);
+            var accessor = new StorageAccess();
+            await accessor.Write(obj.Id, obj);
+        }
+
+        private static async Task<T> Read<T>(string id)
+        {
+            var accessor = new StorageAccess();
+            return (T)(await accessor.Read(id, typeof(T)));
         }
     }
 }
