@@ -17,11 +17,9 @@ namespace ApaScoreKeeper
         public Player Player1 { get; set; }
         public Player Player2 { get; set; }
         public List<Game> Games { get; set; } = new List<Game>();
-        public Player ActivePlayer => ActiveGame.ActivePlayer;
-        public bool ActivePlayerP1 => Player1 == ActivePlayer;
-        public bool ActivePlayerP2 => Player2 == ActivePlayer;
-        public Game ActiveGame => Games.Last();
         public List<Player> Players => new List<Player> { Player1, Player2 };
+        public Game ActiveGame => Games.Last();
+        public Player ActivePlayer => ActiveGame.ActivePlayer;
 
         public Match(Player p1, Player p2)
         {
@@ -124,28 +122,6 @@ namespace ApaScoreKeeper
             }
         }
         #endregion
-
-        public int Points(Player player) => Games.Aggregate(0, (sum, g) => sum + g.Points(player));
-        public int PointsP1 => Points(Player1);
-        public int PointsP2 => Points(Player2);
-
-        public int Safeties(Player player) => Games.Aggregate(0, (sum, g) => sum + g.Safeties(player));
-        public int SafetiesP1 => Safeties(Player1);
-        public int SafetiesP2 => Safeties(Player2);
-
-        public int DeadBalls(Player player) => Games.Aggregate(0, (sum, g) => sum + g.DeadBalls(player));
-        public int DeadBallsP1 => DeadBalls(Player1);
-        public int DeadBallsP2 => DeadBalls(Player2);
-
-        public int TimeOuts(Player player) => Games.Aggregate(0, (sum, g) => sum + g.TimeOuts(player));
-        public int TimeOutsP1 => TimeOuts(Player1);
-        public int TimeOutsP2 => TimeOuts(Player2);
-        public bool T1VisibleP1 => Player1.TimeOutsPerGame - ActiveGame.TimeOuts(Player1) > 0;
-        public bool T2VisibleP1 => Player1.TimeOutsPerGame - ActiveGame.TimeOuts(Player1) > 1;
-        public bool T1VisibleP2 => Player2.TimeOutsPerGame - ActiveGame.TimeOuts(Player2) > 0;
-        public bool T2VisibleP2 => Player2.TimeOutsPerGame - ActiveGame.TimeOuts(Player2) > 1;
-
-        public bool IsComplete { get { return Players.Any(p => Points(p) == p.PointsToWinMatch); } }
         
         void OnPropertyChanged(string propertyName)
         {
@@ -158,8 +134,6 @@ namespace ApaScoreKeeper
         }
 
         string ActivePlayerSuffix => ActivePlayer == Player1 ? "P1" : "P2";
-        public int GameNumber => Games.Count();
-        public int InningNumber => ActiveGame.Innings.Count();
-        public int BallsOnTable => 9 - ActiveGame.Points() - ActiveGame.DeadBalls();
+        
     }
 }

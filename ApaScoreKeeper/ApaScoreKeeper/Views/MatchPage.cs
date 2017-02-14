@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApaScoreKeeper.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,24 +9,27 @@ using Xamarin.Forms;
 
 namespace ApaScoreKeeper
 {
-    public class MatchPage : ContentPage
+    public class LeagueMatchPage : ContentPage
     {
         const int buttonWidth = 80;
         const int buttonHeight = 80;
 
         private Label NotificationLabel = new Label { FontSize = 32 };
 
-        private Match Match { get; set; }
-        public MatchPage(Player p1, Player p2) : this(new Match(p1, p2))
+        private LeagueMatchVM MatchVM { get; set; }
+
+        private Match Match => this.MatchVM.Match;
+
+        public LeagueMatchPage(Player p1, Player p2) : this(new Match(p1, p2))
         {            
         }
 
-        public MatchPage(Match match)
+        public LeagueMatchPage(Match match)
         {
             var orientationHandler = DependencyService.Get<IOrientationHandler>();
             orientationHandler.ForceLandscape();
 
-            Match = match;
+            MatchVM = new LeagueMatchVM(match);
 
             var swipableFrame = new SwipeableFrame
             {
@@ -44,7 +48,7 @@ namespace ApaScoreKeeper
 
             swipableFrame.SwipedLeft += async (sender, e) =>
             {
-                if (Match.ActivePlayer == Match.Player2)
+                if (MatchVM.ActivePlayer == MatchVM.Player2)
                 {
                     Match.Miss();
                     await Notify("Miss");
@@ -53,7 +57,7 @@ namespace ApaScoreKeeper
 
             swipableFrame.SwipedRight += async (sender, e) =>
             {
-                if (Match.ActivePlayer == Match.Player1)
+                if (MatchVM.ActivePlayer == MatchVM.Player1)
                 {
                     Match.Miss();
                     await Notify("Miss");
@@ -78,9 +82,9 @@ namespace ApaScoreKeeper
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children = {
-                        PlayerStack(Match.Player1, "P1"),
+                        PlayerStack(MatchVM.Player1, "P1"),
                         TopMiddleStack(),
-                        PlayerStack(Match.Player2, "P2"),
+                        PlayerStack(MatchVM.Player2, "P2"),
                     }
             };
 
@@ -100,9 +104,9 @@ namespace ApaScoreKeeper
                 Match.Undo();
             };
 
-            earlyNineButton.Clicked += async (sender, e) =>
+            earlyNineButton.Clicked += (sender, e) =>
             {
-                while (Match.BallsOnTable > 1)
+                while (MatchVM.BallsOnTable > 1)
                 {
                     Match.DeadBall();                    
                 }
@@ -143,7 +147,7 @@ namespace ApaScoreKeeper
             safetiesLabel.GestureRecognizers.Add(new TapGestureRecognizer
             {
                 Command = new Command(async () => {
-                    if (Match.ActivePlayer == player)
+                    if (MatchVM.ActivePlayer == player)
                     {
                         Match.Safety();
                         await Notify("Safety");
@@ -154,7 +158,7 @@ namespace ApaScoreKeeper
             deadBallsLabel.GestureRecognizers.Add(new TapGestureRecognizer
             {
                 Command = new Command(async () => {
-                    if (Match.ActivePlayer == player)
+                    if (MatchVM.ActivePlayer == player)
                         Match.DeadBall();
                         await Notify("Dead ball");
                 }),
@@ -181,7 +185,7 @@ namespace ApaScoreKeeper
             var timeOutLabel1 = new Button
             {
                 FontSize = 10,
-                BindingContext = Match,
+                BindingContext = MatchVM,
                 Text = "T",
                 TextColor = Color.Teal,
                 BackgroundColor = Color.Transparent,
@@ -190,7 +194,7 @@ namespace ApaScoreKeeper
 
             timeOutLabel1.Clicked += (sender, e) =>
             {
-                if (Match.ActivePlayer == player)
+                if (MatchVM.ActivePlayer == player)
                 {
                     Match.TimeOut();
                 }
@@ -201,7 +205,7 @@ namespace ApaScoreKeeper
             var timeOutLabel2 = new Button
             {
                 FontSize = 10,
-                BindingContext = Match,
+                BindingContext = MatchVM,
                 Text = "T",
                 TextColor = Color.Teal,
                 BackgroundColor = Color.Transparent,
@@ -210,7 +214,7 @@ namespace ApaScoreKeeper
 
             timeOutLabel2.Clicked += (sender, e) =>
             {
-                if (Match.ActivePlayer == player)
+                if (MatchVM.ActivePlayer == player)
                 {
                     Match.TimeOut();
                 }
@@ -256,18 +260,18 @@ namespace ApaScoreKeeper
             layout.GestureRecognizers.Add(new TapGestureRecognizer
             {
                 Command = new Command(async () => {
-                    if (Match.ActivePlayer == player)
+                    if (MatchVM.ActivePlayer == player)
                     {
                         Match.AddPoint();
-                        if (player.PointsToWinMatch - Match.Points(player) == 5)
+                        if (player.PointsToWinMatch - MatchVM.Points(player) == 5)
                         {
                             await Notify("5 more!");
                         }
-                        else if (player.PointsToWinMatch - Match.Points(player) == 3)
+                        else if (player.PointsToWinMatch - MatchVM.Points(player) == 3)
                         {
                             await Notify("3 more!");
                         }
-                        else if (player.PointsToWinMatch - Match.Points(player) == 1)
+                        else if (player.PointsToWinMatch - MatchVM.Points(player) == 1)
                         {
                             await Notify("Game ball!");
                         }
@@ -377,7 +381,7 @@ namespace ApaScoreKeeper
             return new Label
             {
                 FontSize = fontSize,
-                BindingContext = Match,
+                BindingContext = MatchVM,
                 Text = text,
             };
         }

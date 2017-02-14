@@ -103,13 +103,13 @@ namespace ApaScoreKeeper
 
                 var match = new Match(Player1, Player2);
                 await LocalStorage.AddRecentMatch(match);
-                await Navigation.PushModalAsync(new MatchPage(match));
+                await Navigation.PushModalAsync(new LeagueMatchPage(match));
             };
 
             // TODO: disable if empty
             resumeButton.Clicked += async (s, e) =>
             {
-                await Navigation.PushModalAsync(new MatchPage(await LocalStorage.GetMostRecentMatch()));
+                await Navigation.PushModalAsync(new LeagueMatchPage(await LocalStorage.GetMostRecentMatch()));
             };
 
             Content = new StackLayout
