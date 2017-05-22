@@ -31,6 +31,7 @@ namespace ApaScoreKeeper
             return (IUniqueIdentifier)JsonConvert.DeserializeObject(serialized, type, Converter);
         }
 
+
         public async Task Write(string key, IUniqueIdentifier obj)
         {
             var appFolder = await ApplicationFolder();
@@ -38,6 +39,13 @@ namespace ApaScoreKeeper
             var serialized = await Task.Run(() => JsonConvert.SerializeObject(obj, Converter));
 
             await storageFile.WriteAllTextAsync(serialized);
+        }
+
+        public async Task DeleteFile(string key)
+        {
+            var appFolder = await ApplicationFolder();
+            var storageFile = await appFolder.CreateFileAsync(key, CreationCollisionOption.OpenIfExists);
+            await storageFile.DeleteAsync();
         }
 
         private async Task<IFolder> ApplicationFolder()

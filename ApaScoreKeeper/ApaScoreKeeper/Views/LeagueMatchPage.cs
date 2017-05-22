@@ -16,7 +16,7 @@ namespace ApaScoreKeeper
 
         private Label NotificationLabel = new Label { FontSize = 32 };
 
-        private LeagueMatchVM MatchVM { get; set; }
+        private MatchVM MatchVM { get; set; }
 
         private Match Match => this.MatchVM.Match;
 
@@ -26,6 +26,11 @@ namespace ApaScoreKeeper
 
         public LeagueMatchPage(Match match)
         {
+            match.GameEvents.CollectionChanged += async (sender, e) =>
+            {
+                await LocalStorage.Write(match);
+            };
+
             var orientationHandler = DependencyService.Get<IOrientationHandler>();
             orientationHandler.ForceLandscape();
 
@@ -50,7 +55,7 @@ namespace ApaScoreKeeper
             {
                 if (MatchVM.ActivePlayer == MatchVM.Player2)
                 {
-                    Match.Miss();
+                    MatchVM.Miss();
                     await Notify("Miss");
                 }
             };
@@ -59,7 +64,7 @@ namespace ApaScoreKeeper
             {
                 if (MatchVM.ActivePlayer == MatchVM.Player1)
                 {
-                    Match.Miss();
+                    MatchVM.Miss();
                     await Notify("Miss");
                 }
             };
@@ -101,18 +106,18 @@ namespace ApaScoreKeeper
 
             undoButton.Clicked += (s, e) =>
             {
-                Match.Undo();
+                MatchVM.Undo();
             };
 
             earlyNineButton.Clicked += (sender, e) =>
             {
                 while (MatchVM.BallsOnTable > 1)
                 {
-                    Match.DeadBall();                    
+                    MatchVM.DeadBall();                    
                 }
 
-                Match.AddPoint();
-                Match.AddPoint();
+                MatchVM.AddPoint();
+                MatchVM.AddPoint();
             };
 
             var layout = new StackLayout
@@ -130,12 +135,7 @@ namespace ApaScoreKeeper
 
             return layout;
         }
-
-        private void MatchPage_Appearing(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         private StackLayout PlayerStack(Player player, string playerSuffix)
         {            
             var safetiesLabel = NewBoundLabel();
@@ -149,7 +149,7 @@ namespace ApaScoreKeeper
                 Command = new Command(async () => {
                     if (MatchVM.ActivePlayer == player)
                     {
-                        Match.Safety();
+                        MatchVM.Safety();
                         await Notify("Safety");
                     }
                 }),
@@ -159,7 +159,7 @@ namespace ApaScoreKeeper
             {
                 Command = new Command(async () => {
                     if (MatchVM.ActivePlayer == player)
-                        Match.DeadBall();
+                        MatchVM.DeadBall();
                         await Notify("Dead ball");
                 }),
             });
@@ -196,7 +196,7 @@ namespace ApaScoreKeeper
             {
                 if (MatchVM.ActivePlayer == player)
                 {
-                    Match.TimeOut();
+                    MatchVM.TimeOut();
                 }
             };
 
@@ -216,7 +216,7 @@ namespace ApaScoreKeeper
             {
                 if (MatchVM.ActivePlayer == player)
                 {
-                    Match.TimeOut();
+                    MatchVM.TimeOut();
                 }
             };
 
@@ -262,7 +262,7 @@ namespace ApaScoreKeeper
                 Command = new Command(async () => {
                     if (MatchVM.ActivePlayer == player)
                     {
-                        Match.AddPoint();
+                        MatchVM.AddPoint();
                         if (player.PointsToWinMatch - MatchVM.Points(player) == 5)
                         {
                             await Notify("5 more!");
@@ -300,6 +300,7 @@ namespace ApaScoreKeeper
             {
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 Padding = new Thickness(20, 0),
                 Children = {
                     GameStatsStack(),

@@ -12,12 +12,11 @@ namespace ApaScoreKeeper
         public App()
         {
             // The root page of your application
-            MainPage = new NavigationPage(new AllMatchesPage(new string[] { "Dec 14", "Jan 8", "Jan 17" }));
+            MainPage = new NavigationPage(new AllMatchesPage());
         }
 
         protected override void OnStart()
         {
-            // Handle when your app starts
         }
 
         protected override void OnSleep()

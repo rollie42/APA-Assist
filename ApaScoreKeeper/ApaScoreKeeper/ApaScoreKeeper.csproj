@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MatchDataTemplate.cs" />
     <Compile Include="Views\AllMatchesPage.cs" />
     <Compile Include="APA\TeamMatch.cs" />
     <Compile Include="App.cs" />
@@ -47,7 +48,7 @@
     <Compile Include="APA\Player.cs" />
     <Compile Include="IOrientationHandler.cs" />
     <Compile Include="LocalStorage.cs" />
-    <Compile Include="Views\MatchPage.cs" />
+    <Compile Include="Views\LeagueMatchPage.cs" />
     <Compile Include="Views\NewMatchPage.cs" />
     <Compile Include="Views\NewPlayerPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,12 +60,16 @@
     <Compile Include="ViewModels\LeagueMatchVM.cs" />
     <Compile Include="ViewModels\MatchVM.cs" />
     <Compile Include="ViewModels\QuickMatchVM.cs" />
+    <Compile Include="Views\QuickMatchPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Mono.Android">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\MonoAndroid\v6.0\Mono.Android.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>

@@ -10,20 +10,20 @@ namespace ApaScoreKeeper
     public class AllMatchesPage : ContentPage
     {
         public Button NewMatchBtn { get; set; } = new Button() { Text = "New Match" };
-        public Button QuickGameBtn { get; set; } = new Button() { Text = "Quick Game" };
+        public Button ClearLocalStorageBtn { get; set; } = new Button() { Text = "Clear Local Storage" };
         public ListView MatchesList { get; set; } = new ListView() { RowHeight = 40 };
 
-        public AllMatchesPage(IEnumerable<string> matches)
+        public AllMatchesPage()
         {
-            MatchesList.ItemsSource = matches;
-            
-            QuickGameBtn.Clicked += async (sender, e) => {
+            MatchesList.ItemsSource = Task.Run(async () => await LocalStorage.GetRecentMatches()).Result;
+            MatchesList.ItemTemplate = new MatchDataTemplate();
+
+            NewMatchBtn.Clicked += async (sender, e) => {
                 await Navigation.PushModalAsync(new NewMatchPage());
-                //var player1 = new Player() { Name = "Ryan", Skill = 5 };
-                //var player2 = new Player() { Name = "Amjad", Skill = 3 };
-                //player1 = await NewPlayerPage.GetPlayerModal(this.Navigation);
-                //player2 = await NewPlayerPage.GetPlayerModal(this.Navigation);
-                //await Navigation.PushModalAsync(new MatchPage(player1, player2));
+            };
+
+            ClearLocalStorageBtn.Clicked += async (sender, e) => {
+                await LocalStorage.ClearLocalStorage();
             };
 
             Content = new StackLayout
@@ -34,10 +34,9 @@ namespace ApaScoreKeeper
                             HorizontalTextAlignment = TextAlignment.Center,
                             Text = "Welcome to Xamarin Forms!"
                         },
-                        new ListView { RowHeight = 40,
-                            ItemsSource = matches },
+                        MatchesList,
                         NewMatchBtn,
-                        QuickGameBtn,
+                        ClearLocalStorageBtn,
                     }
             };
         }

@@ -13,11 +13,11 @@ namespace ApaScoreKeeper.ViewModels
 
         }
         
-        public int TimeOuts(Player player) => Match.Games.Aggregate(0, (sum, g) => sum + g.TimeOuts(player));
+        public int TimeOuts(Player player) => Games.Aggregate(0, (sum, g) => sum + g.TimeOuts(player));
         public int TimeOutsP1 => TimeOuts(Player1);
         public int TimeOutsP2 => TimeOuts(Player2);
         
-        public int Safeties(Player player) => Match.Games.Aggregate(0, (sum, g) => sum + g.Safeties(player));
+        public int Safeties(Player player) => Games.Aggregate(0, (sum, g) => sum + g.Safeties(player));
         public int SafetiesP1 => Safeties(Player1);
         public int SafetiesP2 => Safeties(Player2);
 

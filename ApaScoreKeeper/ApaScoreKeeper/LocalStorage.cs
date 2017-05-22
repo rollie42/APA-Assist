@@ -23,29 +23,36 @@ namespace ApaScoreKeeper
             await Write(UniqueIdentifierWrapper.Create(_recentGamesName, recentGames));
         }
 
-        public static async Task AddRecentMatch(Match game)
+        public static async Task AddRecentMatch(Match match)
         {
-            var games = await GetRecentMatches();
-            await SaveRecentMatches(games.Concat(new List<Match> { game }));
+            var matches = await GetRecentMatches();
+            await SaveRecentMatches(matches.Concat(new List<Match> { match }));
         }
 
         public static async Task<Match> GetMostRecentMatch()
         {
             var matches = await GetRecentMatches();
-            return matches.FirstOrDefault();
+            return matches.LastOrDefault();
         }
 
-        private static async Task Write(IUniqueIdentifier obj)
+        public static async Task Write(IUniqueIdentifier obj)
         {
             // Write object to storage
             var accessor = new StorageAccess();
             await accessor.Write(obj.Id, obj);
         }
 
-        private static async Task<T> Read<T>(string id)
+        public static async Task<T> Read<T>(string id)
         {
             var accessor = new StorageAccess();
             return (T)(await accessor.Read(id, typeof(T)));
+        }        
+
+        // debug function to clear local data
+        public static async Task ClearLocalStorage()
+        {
+            var accessor = new StorageAccess();
+            await accessor.DeleteFile(_recentGamesName);
         }
     }
 }

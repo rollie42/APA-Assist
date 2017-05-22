@@ -12,6 +12,7 @@ namespace ApaScoreKeeper
     {
         public Player Player1 { get; set; }
         public Player Player2 { get; set; }
+        public bool IsQuickMatch { get; set; } = true;
 
         public NewMatchPage()
         {
@@ -73,10 +74,45 @@ namespace ApaScoreKeeper
                 Text = "Match type",
             };
 
-            var matchTypeDropdown = new Picker { };
-            matchTypeDropdown.Items.Add("Quick Game");
-            matchTypeDropdown.Items.Add("Match");
-            matchTypeDropdown.SelectedIndex = 0;
+            var selColor = Color.Gray;
+            var unselColor = Color.Gray.WithLuminosity(0.1);
+
+            var matchTypeQuick = new Button
+            {
+                Text = "Quick",
+                BackgroundColor = selColor,             
+            };
+            
+
+            var matchTypeLeague = new Button
+            {
+                Text = "League",
+                BackgroundColor = unselColor,
+            };            
+
+            matchTypeQuick.Clicked += (s, e) =>
+            {
+                if (IsQuickMatch)
+                {
+                    return;
+                }
+
+                matchTypeQuick.BackgroundColor = selColor;
+                matchTypeLeague.BackgroundColor = unselColor;
+                IsQuickMatch = true;
+            };
+
+            matchTypeLeague.Clicked += (s, e) =>
+            {
+                if (!IsQuickMatch)
+                {
+                    return;
+                }
+
+                matchTypeQuick.BackgroundColor = unselColor;
+                matchTypeLeague.BackgroundColor = selColor;
+                IsQuickMatch = false;
+            };
 
             var matchTypeRow = new StackLayout
             {
@@ -85,31 +121,43 @@ namespace ApaScoreKeeper
                 Children =
                 {
                     matchTypeLabel,
-                    matchTypeDropdown,
+                    matchTypeQuick,
+                    matchTypeLeague,
                 }
             };
 
             var playButton = new Button { Text = "Play" };
-            var resumeButton = new Button { Text = "Reusme previous" };
+            var resumeButton = new Button { Text = "Resume previous" };
 
             playButton.Clicked += async (s, e) =>
             {
-                if (matchTypeDropdown.Items[matchTypeDropdown.SelectedIndex] == "Quick Game")
+                var match = new Match(Player1, Player2);
+                await LocalStorage.AddRecentMatch(match);
+
+                if (IsQuickMatch)
                 {
                     // Save these settings for next quickmatch
                     await ApplicationProperties.LastQuickMatchPlayer1(Player1);
                     await ApplicationProperties.LastQuickMatchPlayer2(Player2);
+                    await Navigation.PushModalAsync(new QuickMatchPage(match));
                 }
-
-                var match = new Match(Player1, Player2);
-                await LocalStorage.AddRecentMatch(match);
-                await Navigation.PushModalAsync(new LeagueMatchPage(match));
+                else
+                {
+                    await Navigation.PushModalAsync(new LeagueMatchPage(match));
+                }
             };
 
             // TODO: disable if empty
             resumeButton.Clicked += async (s, e) =>
             {
-                await Navigation.PushModalAsync(new LeagueMatchPage(await LocalStorage.GetMostRecentMatch()));
+                if (IsQuickMatch)
+                {
+                    await Navigation.PushModalAsync(new QuickMatchPage(await LocalStorage.GetMostRecentMatch()));
+                }
+                else
+                {
+                    await Navigation.PushModalAsync(new LeagueMatchPage(await LocalStorage.GetMostRecentMatch()));
+                }
             };
 
             Content = new StackLayout
