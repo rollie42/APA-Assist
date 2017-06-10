@@ -16,12 +16,13 @@ namespace ApaScoreKeeper
         
         public Player Player1 { get; set; }
         public Player Player2 { get; set; }
-
         public string Id { get; set; }
+        public DateTime StartTime { get; set; }
 
         public Match()
         {
             Id = Guid.NewGuid().ToString();
+            StartTime = DateTime.UtcNow;
         }
 
         public Match(Player p1, Player p2)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApaScoreKeeper.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,8 @@ namespace ApaScoreKeeper
         public App()
         {
             // The root page of your application
-            MainPage = new NavigationPage(new AllMatchesPage());
+            //MainPage = new NavigationPage(new HomePage());
+            MainPage = new HomePage();
         }
 
         protected override void OnStart()

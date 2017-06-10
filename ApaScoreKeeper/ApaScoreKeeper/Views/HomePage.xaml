@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ApaScoreKeeper.Views.HomePage"
+             Title="APA Title">
+    <StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="My Teams" HorizontalOptions="FillAndExpand"/>
+            <Button Text="+" x:Name="AddTeamButton"></Button>
+        </StackLayout>
+        <ListView x:Name="MyTeams">
+
+        </ListView>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="My Recent Matches" HorizontalOptions="FillAndExpand"/>
+            <Button Text="+" x:Name="AddMatchButton"></Button>
+        </StackLayout>
+        <ListView x:Name="MyRecentMatches">
+
+        </ListView>
+
+    </StackLayout>
+</ContentPage>

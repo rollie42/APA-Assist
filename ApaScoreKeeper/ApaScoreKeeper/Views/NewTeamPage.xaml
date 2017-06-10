@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ApaScoreKeeper.Views.NewTeamPage">
+    <StackLayout>
+        <StackLayout>
+        <Label Text="Team Name" />
+        <Entry x:Name="TeamNameEntry"></Entry>
+        
+        <Label Text="Home Location" />
+        <Entry x:Name="HomeLocationEntry"></Entry>
+
+        <Label Text="Email (optional)" />
+        <Entry x:Name="TeamEmailEntry"></Entry>
+
+        <Label Text="Phone (optional)" />
+        <Entry x:Name="TeamPhoneEntry"></Entry>
+        </StackLayout>
+        <Button Text="Create" x:Name="CreateTeamBtn"></Button>
+        <Button Text="Cancel" x:Name="CancelBtn"></Button>
+    </StackLayout>
+</ContentPage>
+    

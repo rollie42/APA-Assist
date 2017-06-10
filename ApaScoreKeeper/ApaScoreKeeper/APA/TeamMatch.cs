@@ -8,9 +8,10 @@ namespace ApaScoreKeeper
 {
     public class TeamMatch
     {
-        public DateTime StartTime { get; set; }
-        public string Location { get; set; }
-        public List<Team> Teams { get; set; } = new List<Team>();
+        public DateTime StartTime => Matches.Min(m => m.StartTime);
+        public string Location => HomeTeam.HomeLocation;
+        public Team HomeTeam { get; set; }
+        public Team AwayTeam { get; set; }
         public List<Match> Matches { get; set; } = new List<Match>();
     }
 }

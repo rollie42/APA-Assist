@@ -42,11 +42,6 @@ namespace ApaScoreKeeper.ViewModels
         public Player ActivePlayer => ActiveGame.ActivePlayer;
         public bool ActivePlayerP1 => Player1 == ActivePlayer;
         public bool ActivePlayerP2 => Player2 == ActivePlayer;
-
-        public virtual bool T1VisibleP1 => false;
-        public virtual bool T2VisibleP1 => false;
-        public virtual bool T1VisibleP2 => false;
-        public virtual bool T2VisibleP2 => false;
         
         public List<Game> Games { get; set; } = new List<Game>();
         public List<Player> Players => new List<Player> { Player1, Player2 };
